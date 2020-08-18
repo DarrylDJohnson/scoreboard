@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoreboard/models/scoreboard.dart';
+import 'package:scoreboard/models/scorecard.dart';
 import 'package:scoreboard/pages/home/home_page.dart';
 import 'package:scoreboard/pages/scoreboard/scoreboard_page.dart';
 import 'package:scoreboard/screens/main/components/add_scorecard_fab.dart';
@@ -13,7 +14,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  List<Scoreboard> _scoreboards = [
+
+  List<Scoreboard> scoreboards = [
     new Scoreboard(
       name: "First",
     ),
@@ -43,7 +45,10 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   _addScoreboard(String name) =>
-      setState(() => _scoreboards.add(Scoreboard(name: name)));
+      setState(() => scoreboards.add(Scoreboard(name: name)));
+
+  _addScorecard(String name) => setState(
+        () => scoreboards[_currentPage.round()-1].addScorecard(Scorecard(name: name)));
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +59,14 @@ class _MainScreenState extends State<MainScreen> {
             return index == 0
                 ? HomePage(
                     pageController: _controller,
-                    scoreboards: _scoreboards,
+                    scoreboards: scoreboards,
                   )
                 : ScoreboardPage(
                     pageController: _controller,
-                    scoreboard: _scoreboards[index - 1],
+                    scoreboard: scoreboards[index - 1],
                   );
           },
-          itemCount: _scoreboards.length + 1,
+          itemCount: scoreboards.length + 1,
           controller: _controller,
         ),
         floatingActionButton: _currentPage < 0.5
@@ -69,11 +74,11 @@ class _MainScreenState extends State<MainScreen> {
                 onCreateScoreboard: _addScoreboard,
               )
             : AddScorecardFAB(
-                scoreboard: _scoreboards[_currentPage.toInt() - 1],
+                onScoreboardCreated: _addScorecard,
               ),
         bottomNavigationBar: BottomBar(
           pageController: _controller,
-          scoreboards: _scoreboards,
+          scoreboards: scoreboards,
           onCreateScoreboard: _addScoreboard,
         ),
       ),

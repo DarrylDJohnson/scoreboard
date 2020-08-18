@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:scoreboard/models/scoreboard.dart';
+import 'package:scoreboard/models/scorecard.dart';
+import 'package:scoreboard/screens/main/components/create_scorecard_bottom_sheet.dart';
 
-class ScoreboardPage extends StatelessWidget {
+import 'components/scorecard_tile.dart';
+
+class ScoreboardPage extends StatefulWidget {
   final Scoreboard scoreboard;
   final PageController pageController;
 
@@ -12,13 +16,37 @@ class ScoreboardPage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _ScoreboardPageState createState() => _ScoreboardPageState();
+}
+
+class _ScoreboardPageState extends State<ScoreboardPage> {
+  @override
   Widget build(BuildContext context) {
     _buildList() {
       return ListView.builder(
-        itemBuilder: (context, index) => ListTile(
-          title: Text(scoreboard.scores[index].toString()),
-        ),
-        itemCount: scoreboard.scores.length,
+        itemBuilder: (context, index) {
+          Scorecard scorecard = widget.scoreboard.scores[index];
+
+          return ScorecardTile(
+            scorecard: widget.scoreboard.scores[index],
+            onEdit: () => showCreateScorecardBottomSheet(
+              context,
+              initialText: scorecard.name,
+              onScoreboardCreated: (name) {
+                setState(
+                  () {
+                    widget.scoreboard.scores[index].name = name;
+                  },
+                );
+              },
+            ),
+            onDelete: () =>
+                setState(() => widget.scoreboard.scores.removeAt(index)),
+            onUndo: () =>
+                setState(() => widget.scoreboard.scores.add(scorecard)),
+          );
+        },
+        itemCount: widget.scoreboard.scores.length,
       );
     }
 
@@ -50,15 +78,16 @@ class ScoreboardPage extends StatelessWidget {
         AppBar(
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: () => pageController.jumpToPage(0),
+            onPressed: () => widget.pageController.jumpToPage(0),
           ),
           title: Text(
-            scoreboard.name,
+            widget.scoreboard.name,
           ),
         ),
         Expanded(
-          child:
-              scoreboard.scores.length > 0 ? _buildList() : _buildEmptyList(),
+          child: widget.scoreboard.scores.length > 0
+              ? _buildList()
+              : _buildEmptyList(),
         )
       ],
     );

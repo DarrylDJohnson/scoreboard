@@ -1,13 +1,18 @@
-import 'package:flutter/material.dart';
+import 'package:scoreboard/models/scorecard.dart';
 
 class Scoreboard {
   final String id;
   final String name;
-  final Map<String, int> scores;
+  final List<String> initialScores;
+  List<Scorecard> scores;
 
   Scoreboard({
     this.id = '',
     this.name = '',
-    this.scores = const {},
-  });
+    this.initialScores,
+  }): this.scores = initialScores ?? [];
+
+  addScorecard(Scorecard scorecard){
+    scores.add(scorecard);
+  }
 }

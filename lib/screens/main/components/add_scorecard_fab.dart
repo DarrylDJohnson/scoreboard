@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:scoreboard/models/scoreboard.dart';
 import 'package:scoreboard/screens/main/components/create_scorecard_bottom_sheet.dart';
 
 class AddScorecardFAB extends StatelessWidget {
-  final Scoreboard scoreboard;
+  final Function(String) onScoreboardCreated;
 
-  const AddScorecardFAB({Key key, this.scoreboard}) : super(key: key);
+  const AddScorecardFAB({Key key, this.onScoreboardCreated}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       icon: Icon(Icons.add),
       label: Text('add scorecard'),
-      onPressed: () =>
-          showCreateScorecardBottomSheet(context, scoreboard: scoreboard),
+      onPressed: () => showCreateScorecardBottomSheet(
+        context,
+        onScoreboardCreated: onScoreboardCreated,
+      ),
     );
   }
 }

@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:scoreboard/models/scoreboard.dart';
 
-showCreateScorecardBottomSheet(BuildContext context, {@required Scoreboard scoreboard}) => showModalBottomSheet(
+showCreateScorecardBottomSheet(
+  BuildContext context, {
+  String initialText = '',
+  @required Function(String) onScoreboardCreated,
+}) =>
+    showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(8.0),
         ),
       ),
-      builder: (context) => CreateScorecardBottomSheet(scoreboard: scoreboard),
+      builder: (context) => CreateScorecardBottomSheet(
+        onScoreboardCreated: onScoreboardCreated,
+        initialText: initialText,
+      ),
     );
 
 class CreateScorecardBottomSheet extends StatefulWidget {
+  final Function(String) onScoreboardCreated;
+  final String initialText;
 
-  final Scoreboard scoreboard;
-
-  const CreateScorecardBottomSheet({Key key, @required this.scoreboard}) : super(key: key);
+  const CreateScorecardBottomSheet({
+    Key key,
+    @required this.onScoreboardCreated,
+    this.initialText = "",
+  }) : super(key: key);
 
   @override
   _CreateScorecardBottomSheetState createState() =>
@@ -28,7 +39,7 @@ class _CreateScorecardBottomSheetState
 
   @override
   void initState() {
-    _controller = TextEditingController();
+    _controller = TextEditingController(text: widget.initialText);
     super.initState();
   }
 
@@ -40,18 +51,20 @@ class _CreateScorecardBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        TextField(
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: ListTile(
+        title: TextField(
           controller: _controller,
           textInputAction: TextInputAction.done,
-          onSubmitted: (name) => () {
-            widget.scoreboard.scores.addAll({name: 0});
+          onSubmitted: (name) {
+            widget.onScoreboardCreated(name);
             Navigator.of(context).pop(this);
           },
         ),
-        Row(
+        subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             FlatButton(
@@ -62,14 +75,14 @@ class _CreateScorecardBottomSheetState
             FlatButton(
               child: Text("Done"),
               textColor: Theme.of(context).accentColor,
-              onPressed: () => () {
-                widget.scoreboard.scores.addAll({_controller.text: 0});
+              onPressed: () {
+                widget.onScoreboardCreated(_controller.text);
                 Navigator.of(context).pop(this);
               },
             ),
           ],
-        )
-      ],
+        ),
+      ),
     );
   }
 }
