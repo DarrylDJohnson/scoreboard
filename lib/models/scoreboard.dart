@@ -13,10 +13,10 @@ class Scoreboard {
 }
 
 List<Scoreboard> scoreboards = [
-  Scoreboard(
+  new Scoreboard(
     name: "First",
   ),
-  Scoreboard(
+  new Scoreboard(
     name: "Second",
   ),
 ];

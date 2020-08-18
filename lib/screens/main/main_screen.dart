@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:scoreboard/models/scoreboard.dart';
+import 'package:scoreboard/pages/home/home_page.dart';
+import 'package:scoreboard/pages/scoreboard/scoreboard_page.dart';
+import 'package:scoreboard/screens/main/components/add_scorecard_fab.dart';
 
+import 'components/add_scoreboard_fab.dart';
 import 'components/bottom_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -8,11 +13,39 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  PageController _controller;
+
+  @override
+  void initState() {
+    _controller = PageController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: BottomBar(),
+        body: PageView.builder(
+          itemBuilder: (context, index) {
+            return index == 0
+                ? HomePage(pageController: _controller)
+                : ScoreboardPage(
+                    pageController: _controller,
+                    scoreboard: scoreboards[index - 1],
+                  );
+          },
+          itemCount: scoreboards.length + 1,
+          controller: _controller,
+        ),
+        floatingActionButton:
+            _controller.page < 1 ? AddScoreboardFAB() : AddScorecardFAB(),
+        bottomNavigationBar: BottomBar(pageController: _controller),
       ),
     );
   }
