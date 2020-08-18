@@ -5,7 +5,8 @@ import 'create_scoreboard_bottom_sheet.dart';
 
 buildMenuBottomSheet(BuildContext context,
         {@required PageController pageController,
-        @required List<Scoreboard> scoreboards}) =>
+        @required List<Scoreboard> scoreboards,
+        @required Function(String) onCreateScoreboard}) =>
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -13,16 +14,24 @@ buildMenuBottomSheet(BuildContext context,
           top: Radius.circular(8.0),
         ),
       ),
-      builder: (context) => MenuBottomSheet(pageController: pageController),
+      builder: (context) => MenuBottomSheet(
+        pageController: pageController,
+        scoreboards: scoreboards,
+        onCreateScoreboard: onCreateScoreboard,
+      ),
     );
 
 class MenuBottomSheet extends StatelessWidget {
   final PageController pageController;
   final List<Scoreboard> scoreboards;
+  final Function(String) onCreateScoreboard;
 
-  const MenuBottomSheet(
-      {Key key, @required this.pageController, @required this.scoreboards})
-      : super(key: key);
+  const MenuBottomSheet({
+    Key key,
+    @required this.pageController,
+    @required this.scoreboards,
+    @required this.onCreateScoreboard,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +60,10 @@ class MenuBottomSheet extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.add),
           title: Text("Create Scoreboard"),
-          onTap: () => showCreateScoreBoardBottomSheet(context),
+          onTap: () => showCreateScoreboardBottomSheet(
+            context,
+            onCreateScoreboard: onCreateScoreboard,
+          ),
         )
       ],
     );

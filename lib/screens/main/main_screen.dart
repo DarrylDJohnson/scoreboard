@@ -27,7 +27,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
-
     _controller = PageController()
       ..addListener(() {
         setState(() {
@@ -43,6 +42,9 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
+  _addScoreboard(String name) =>
+      setState(() => _scoreboards.add(Scoreboard(name: name)));
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -50,7 +52,10 @@ class _MainScreenState extends State<MainScreen> {
         body: PageView.builder(
           itemBuilder: (context, index) {
             return index == 0
-                ? HomePage(pageController: _controller, scoreboards: _scoreboards,)
+                ? HomePage(
+                    pageController: _controller,
+                    scoreboards: _scoreboards,
+                  )
                 : ScoreboardPage(
                     pageController: _controller,
                     scoreboard: _scoreboards[index - 1],
@@ -60,11 +65,17 @@ class _MainScreenState extends State<MainScreen> {
           controller: _controller,
         ),
         floatingActionButton: _currentPage < 0.5
-            ? AddScoreboardFAB()
+            ? AddScoreboardFAB(
+                onCreateScoreboard: _addScoreboard,
+              )
             : AddScorecardFAB(
                 scoreboard: _scoreboards[_currentPage.toInt() - 1],
               ),
-        bottomNavigationBar: BottomBar(pageController: _controller, scoreboards: _scoreboards),
+        bottomNavigationBar: BottomBar(
+          pageController: _controller,
+          scoreboards: _scoreboards,
+          onCreateScoreboard: _addScoreboard,
+        ),
       ),
     );
   }

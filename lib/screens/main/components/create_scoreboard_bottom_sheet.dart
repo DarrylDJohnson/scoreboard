@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:scoreboard/models/scoreboard.dart';
 
-showCreateScoreBoardBottomSheet(BuildContext context,
-        {@required List<Scoreboard> scoreboards}) =>
+showCreateScoreboardBottomSheet(
+  BuildContext context, {
+  @required Function(String) onCreateScoreboard,
+}) =>
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -10,14 +11,15 @@ showCreateScoreBoardBottomSheet(BuildContext context,
           top: Radius.circular(8.0),
         ),
       ),
-      builder: (context) =>
-          CreateScoreboardBottomSheet(scoreboards: scoreboards),
+      builder: (context) => CreateScoreboardBottomSheet(
+        onCreateScoreboard: onCreateScoreboard,
+      ),
     );
 
 class CreateScoreboardBottomSheet extends StatefulWidget {
-  final List<Scoreboard> scoreboards;
+  final Function(String) onCreateScoreboard;
 
-  const CreateScoreboardBottomSheet({Key key, this.scoreboards})
+  const CreateScoreboardBottomSheet({Key key, this.onCreateScoreboard})
       : super(key: key);
 
   @override
@@ -50,10 +52,8 @@ class _CreateScoreboardBottomSheetState
           title: TextField(
             controller: _controller,
             textInputAction: TextInputAction.done,
-            onSubmitted: (name) => () {
-              setState(() {
-                widget.scoreboards.add(Scoreboard(name: name));
-              });
+            onSubmitted: (name) {
+              widget.onCreateScoreboard(name);
               Navigator.of(context).pop(this);
             },
             decoration: InputDecoration(
@@ -72,10 +72,8 @@ class _CreateScoreboardBottomSheetState
               FlatButton(
                 child: Text("Done"),
                 textColor: Theme.of(context).accentColor,
-                onPressed: () => () {
-                  setState(() {
-                    widget.scoreboards.add(Scoreboard(name: _controller.text));
-                  });
+                onPressed: () {
+                  widget.onCreateScoreboard(_controller.text);
                   Navigator.of(context).pop(this);
                 },
               ),
