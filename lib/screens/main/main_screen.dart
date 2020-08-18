@@ -14,10 +14,15 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   PageController _controller;
+  double _currentPage = 0;
 
   @override
   void initState() {
-    _controller = PageController();
+    _controller = PageController()..addListener(() {
+      setState(() {
+        _currentPage = _controller.page;
+      });
+    });
     super.initState();
   }
 
@@ -44,7 +49,7 @@ class _MainScreenState extends State<MainScreen> {
           controller: _controller,
         ),
         floatingActionButton:
-            _controller.page < 1 ? AddScoreboardFAB() : AddScorecardFAB(),
+            _currentPage < 0.5 ? AddScoreboardFAB() : AddScorecardFAB(),
         bottomNavigationBar: BottomBar(pageController: _controller),
       ),
     );
