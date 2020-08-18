@@ -3,7 +3,9 @@ import 'package:scoreboard/models/scoreboard.dart';
 
 import 'create_scoreboard_bottom_sheet.dart';
 
-buildMenuBottomSheet(BuildContext context, {PageController pageController}) =>
+buildMenuBottomSheet(BuildContext context,
+        {@required PageController pageController,
+        @required List<Scoreboard> scoreboards}) =>
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -16,8 +18,11 @@ buildMenuBottomSheet(BuildContext context, {PageController pageController}) =>
 
 class MenuBottomSheet extends StatelessWidget {
   final PageController pageController;
+  final List<Scoreboard> scoreboards;
 
-  const MenuBottomSheet({Key key, this.pageController}) : super(key: key);
+  const MenuBottomSheet(
+      {Key key, @required this.pageController, @required this.scoreboards})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

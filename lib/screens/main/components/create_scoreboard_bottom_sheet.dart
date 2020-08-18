@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:scoreboard/models/scoreboard.dart';
 
-showCreateScoreBoardBottomSheet(BuildContext context) => showModalBottomSheet(
+showCreateScoreBoardBottomSheet(BuildContext context,
+        {@required List<Scoreboard> scoreboards}) =>
+    showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(8.0),
         ),
       ),
-      builder: (context) => CreateScoreboardBottomSheet(),
+      builder: (context) =>
+          CreateScoreboardBottomSheet(scoreboards: scoreboards),
     );
 
 class CreateScoreboardBottomSheet extends StatefulWidget {
+  final List<Scoreboard> scoreboards;
+
+  const CreateScoreboardBottomSheet({Key key, this.scoreboards})
+      : super(key: key);
+
   @override
   _CreateScoreboardBottomSheetState createState() =>
       _CreateScoreboardBottomSheetState();
@@ -44,7 +52,7 @@ class _CreateScoreboardBottomSheetState
             textInputAction: TextInputAction.done,
             onSubmitted: (name) => () {
               setState(() {
-                scoreboards.add(Scoreboard(name: name));
+                widget.scoreboards.add(Scoreboard(name: name));
               });
               Navigator.of(context).pop(this);
             },
@@ -66,7 +74,7 @@ class _CreateScoreboardBottomSheetState
                 textColor: Theme.of(context).accentColor,
                 onPressed: () => () {
                   setState(() {
-                    scoreboards.add(Scoreboard(name: _controller.text));
+                    widget.scoreboards.add(Scoreboard(name: _controller.text));
                   });
                   Navigator.of(context).pop(this);
                 },

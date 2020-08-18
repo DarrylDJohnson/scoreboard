@@ -13,16 +13,27 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  List<Scoreboard> _scoreboards = [
+    new Scoreboard(
+      name: "First",
+    ),
+    new Scoreboard(
+      name: "Second",
+    ),
+  ];
+
   PageController _controller;
   double _currentPage = 0;
 
   @override
   void initState() {
-    _controller = PageController()..addListener(() {
-      setState(() {
-        _currentPage = _controller.page;
+
+    _controller = PageController()
+      ..addListener(() {
+        setState(() {
+          _currentPage = _controller.page;
+        });
       });
-    });
     super.initState();
   }
 
@@ -39,18 +50,21 @@ class _MainScreenState extends State<MainScreen> {
         body: PageView.builder(
           itemBuilder: (context, index) {
             return index == 0
-                ? HomePage(pageController: _controller)
+                ? HomePage(pageController: _controller, scoreboards: _scoreboards,)
                 : ScoreboardPage(
                     pageController: _controller,
-                    scoreboard: scoreboards[index - 1],
+                    scoreboard: _scoreboards[index - 1],
                   );
           },
-          itemCount: scoreboards.length + 1,
+          itemCount: _scoreboards.length + 1,
           controller: _controller,
         ),
-        floatingActionButton:
-            _currentPage < 0.5 ? AddScoreboardFAB() : AddScorecardFAB(),
-        bottomNavigationBar: BottomBar(pageController: _controller),
+        floatingActionButton: _currentPage < 0.5
+            ? AddScoreboardFAB()
+            : AddScorecardFAB(
+                scoreboard: _scoreboards[_currentPage.toInt() - 1],
+              ),
+        bottomNavigationBar: BottomBar(pageController: _controller, scoreboards: _scoreboards),
       ),
     );
   }

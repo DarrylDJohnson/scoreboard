@@ -3,8 +3,13 @@ import 'package:scoreboard/models/scoreboard.dart';
 
 class HomePage extends StatelessWidget {
   final PageController pageController;
+  final List<Scoreboard> scoreboards;
 
-  const HomePage({Key key, this.pageController}) : super(key: key);
+  const HomePage({
+    Key key,
+    @required this.pageController,
+    @required this.scoreboards,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

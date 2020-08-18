@@ -11,12 +11,3 @@ class Scoreboard {
     this.scores = const {},
   });
 }
-
-List<Scoreboard> scoreboards = [
-  new Scoreboard(
-    name: "First",
-  ),
-  new Scoreboard(
-    name: "Second",
-  ),
-];
